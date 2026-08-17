@@ -13,7 +13,7 @@ int main(void)
 
     printf("%5s%17s%17s%17s\n%5s%17s%17s%17s\n\n", "Count", "Item", "Average", "Naive avg", "-----", "----", "-------", "---------");
 
-    for (i = 1; scanf("%lf".&x)==1; ++i){
+    for (i = 1; scanf("%lf", &x)==1; ++i){
         avg += (x - avg) / i; // better average
         sum += x;
         navg = sum / i;
