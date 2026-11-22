@@ -1,0 +1,74 @@
+# Stack and Circular Queue in C
+
+**Module:** IDE202 Software Engineering Internship (AS2026)
+**Student:** Tshering Tenzin (02250376)
+**Faculty guide:** Nima Yoezer
+**Linked certificate:** Technical Certificate 3, *Foundations of Data Structures and Algorithm Analysis* (Packt, Coursera), verification: https://coursera.org/verify/CXI8EZFD7S9Y
+**Competency gap addressed:** Data Structures and Algorithms; applying Big O analysis to code I implement myself (Journal 3).
+
+## 1. Purpose
+
+This artefact implements two basic data structures in C, an array-based **stack** (LIFO) and a **circular queue** (FIFO), with tests for normal and edge cases. It applies the Big O ideas from Modules 1 and 2 of the Packt course and builds on the C skills from Certificate 1.
+
+## 2. Files
+
+| File | Description |
+|---|---|
+| `stack_queue.c` | Stack, circular queue and test `main` in one file |
+| `README.md` | This document |
+
+## 3. How to compile and run
+
+```
+gcc -Wall stack_queue.c -o test
+./test          # on Windows: test.exe
+```
+
+## 4. Expected output
+
+```
+pop on empty stack -> 0 (expect 0)
+push on full stack -> 0 (expect 0)
+pop -> 50 (expect 50)
+dequeue -> 3 (expect 3)
+```
+
+(Replace this section with a screenshot or the actual output from your own run.)
+
+## 5. How it works
+
+**Stack.** `top` holds the index of the newest item and is `-1` when the stack is empty. `push` checks for a full stack, increments `top` and stores the value. `pop` checks for an empty stack, copies out `data[top]` and decrements `top`. `peek` reads the top value without changing `top`.
+
+**Circular queue.** `front` is the index of the oldest item and `count` is the number of stored items. The next free slot is `(front + count) % SIZE`, so the index wraps back to 0 at the end of the array. `dequeue` returns `data[front]`, moves `front` to `(front + 1) % SIZE` and decrements `count`.
+
+Every function returns `0` on failure (full or empty) and `1` on success, so errors are checked instead of corrupting memory.
+
+## 6. Big O analysis
+
+| Operation | Time | Space | Reason |
+|---|---|---|---|
+| `stack_push` | O(1) | O(1) | One comparison, one increment, one store |
+| `stack_pop` | O(1) | O(1) | One comparison, one read, one decrement |
+| `stack_peek` | O(1) | O(1) | One comparison and one read |
+| `stack_isEmpty` / `stack_isFull` | O(1) | O(1) | One comparison |
+| `enqueue` | O(1) | O(1) | One modulo calculation and one store |
+| `dequeue` | O(1) | O(1) | One read and one modulo update |
+| `queue_isEmpty` / `queue_isFull` | O(1) | O(1) | One comparison |
+
+Both structures use O(n) storage overall, where n = `SIZE`, the fixed array length.
+
+## 7. Design decision
+
+The queue is **circular** and tracks `front` and `count`. The alternative was a plain array where every `dequeue` shifts all remaining items one place left, which costs O(n) per dequeue. Wrapping with `% SIZE` keeps `dequeue` at O(1). Tracking `count` also removes the ambiguity between a full and an empty queue, which happens when only `front` and `rear` are compared.
+
+## 8. Limitation
+
+The size is fixed at compile time (`SIZE 5`). Adding to a full structure fails instead of growing. A dynamic array or a linked list would remove this limit, at the cost of extra memory management.
+
+## 9. Tests covered
+
+- `pop` on an empty stack returns failure.
+- `push` on a full stack returns failure.
+- Stack returns items in last-in, first-out order.
+- Queue wrap-around: enqueue until full, dequeue two, enqueue two more, then dequeue and check order.
+
